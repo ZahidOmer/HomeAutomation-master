@@ -1,36 +1,26 @@
 package com.example.zahid.homeautomation.ViewHolder;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
+import android.app.Activity;
+import android.widget.ArrayAdapter;
 
-import com.example.zahid.homeautomation.Interface.ItemClickListener;
+import com.example.zahid.homeautomation.Model.Month;
 import com.example.zahid.homeautomation.R;
 
-public class MonthViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
-    public String devicemac;
-    public String momaxampere;
-    public String momaxvoltage;
-    public String motimestamp;
-    public String mounits;
+import java.util.List;
 
-    ItemClickListener itemClickListener;
+public class MonthViewHolder extends ArrayAdapter<Month> {
 
+    private Activity context;
+    private List<Month> momoList;
 
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public MonthViewHolder(Activity context, List<Month> moList){
+        super(context,R.layout.activity_graph,moList);
+        this.context = context;
+        this.momoList = moList;
     }
 
 
-    public MonthViewHolder(View itemView) {
-        super(itemView);
 
-        itemView.setOnClickListener(this);
-    }
 
-    @Override
-    public void onClick(View view) {
-        itemClickListener.onClick(view, getAdapterPosition());
-    }
 }
 

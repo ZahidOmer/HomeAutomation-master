@@ -1,12 +1,20 @@
 package com.example.zahid.homeautomation.Model;
 
-public class MonthModel {
+public class Month {
     private String devicemac;
     private String momaxampere;
     private String momaxvoltage;
     private String motimestamp;
     private String mounits;
+    private String Month;
 
+    public String getMonth() {
+        return Month;
+    }
+
+    public void setMonth(String month) {
+        Month = month;
+    }
 
     public String getDevicemac() {
         return devicemac;

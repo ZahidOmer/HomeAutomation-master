@@ -2,7 +2,6 @@ package com.example.zahid.homeautomation;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,15 +18,12 @@ import com.example.zahid.homeautomation.Utill.Common;
 import com.example.zahid.homeautomation.ViewHolder.AccountViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
-//    FirebaseDatabase database = FirebaseDatabase.getInstance();
-//    DatabaseReference myRef = database.getReference("message");
+//    FirebaseDatabase databasetest = FirebaseDatabase.getInstance();
+//    DatabaseReference myRef = databasetest.getReference("message");
 
     //Firebase
     FirebaseDatabase database;
@@ -59,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setAccount() {
         adapter.startListening();
-//        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
     }
 
     public void showAccountData() {
@@ -118,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void graphActivity(View view) {
-        Intent intent = new Intent(this,Main2Activity.class);
+        Intent intent = new Intent(this,GraphActivity.class);
         startActivity(intent);
     }
 }
