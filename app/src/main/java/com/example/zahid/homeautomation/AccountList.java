@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.zahid.homeautomation.Interface.ItemClickListener;
 import com.example.zahid.homeautomation.Model.Account;
 import com.example.zahid.homeautomation.Utill.Common;
@@ -21,14 +22,12 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
-//    FirebaseDatabase databasetest = FirebaseDatabase.getInstance();
-//    DatabaseReference myRef = databasetest.getReference("message");
+public class AccountList extends AppCompatActivity {
 
     //Firebase
     FirebaseDatabase database;
     DatabaseReference account;
-
+    LottieAnimationView loadingAnimation;
     //firebasae ui adapter
     FirebaseRecyclerOptions<Account> options;
     FirebaseRecyclerAdapter<Account, AccountViewHolder> adapter;
@@ -39,20 +38,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_account_list);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_account);
-
-//        myRef.setValue("Hello, World!");
-
+        loadingAnimation = (LottieAnimationView) findViewById(R.id.lav_loading);
         showAccountData();
 
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayout);
         setAccount();
-    }
 
+    }
     private void setAccount() {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
@@ -77,12 +74,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull AccountViewHolder holder, int position, @NonNull final Account model) {
                 try {
+                    loadingAnimation.setVisibility(View.GONE);
                     holder.email.setText(String.valueOf(model.getEmail()));
                     holder.deviceName.setText(String.valueOf(model.getDevicemac()));
-                    holder.live.setText(String.valueOf(model.getLive()));
-                    Log.i("myvalue", model.getEmail());
-                    Log.i("myvalue", model.getDevicemac());
-                    Log.i("myvalue", String.valueOf(model.getLive()));
+                    holder.live.setText(String.valueOf(model.getLiverequest()));
+//                    Log.i("myvalue", model.getEmail());
+//                    Log.i("myvalue", model.getDevicemac());
+//                    Log.i("myvalue", String.valueOf(model.getLive()));
                 } catch (Exception e) {
                     Log.i("myvalue", String.valueOf(e));
                 }
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view, int position) {
                         Common.Account_ID = adapter.getRef(position).getKey();
-                        Toast.makeText(MainActivity.this, "Email: " + model.getEmail(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountList.this, "Email: " + model.getEmail(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -113,8 +111,4 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void graphActivity(View view) {
-        Intent intent = new Intent(this,GraphActivity.class);
-        startActivity(intent);
-    }
 }

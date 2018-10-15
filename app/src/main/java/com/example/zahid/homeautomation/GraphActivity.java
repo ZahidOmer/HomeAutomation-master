@@ -13,12 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.zahid.homeautomation.Model.Account;
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.zahid.homeautomation.Model.Month;
 import com.example.zahid.homeautomation.Utill.Common;
-import com.example.zahid.homeautomation.ViewHolder.AccountViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -46,10 +43,11 @@ public class GraphActivity extends AppCompatActivity {
     ListView lv;
     ArrayList<BarData> list;
     static List<String> monthList;
-    private static List<String> months;
+    private List<String> months;
     private ChartDataAdapter chartDataAdapter;
     List<String> fMonth = new ArrayList<>();
     List<String> lMonth = new ArrayList<>();
+    LottieAnimationView lav_loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph);
 
         lv = (ListView) findViewById(R.id.lv_graph);
-
+        lav_loading = (LottieAnimationView) findViewById(R.id.lav_loading);
         monthTable = FirebaseDatabase.getInstance().getReference(Common.STR_Month);
         moUnitRef = monthTable.child(Common.STR_Units);
         monthList = new ArrayList<>();
@@ -75,7 +73,9 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        chartDataAdapter.clear();
+        if (chartDataAdapter != null) {
+            chartDataAdapter.clear();
+        }
     }
 
     private class ChartDataAdapter extends ArrayAdapter<BarData> {
@@ -89,7 +89,7 @@ public class GraphActivity extends AppCompatActivity {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             BarData data = getItem(position);
 
-            if (months.size()>=7 || Common.month==1 ) {
+            if (Common.monthSizeExceed) {
                 if (Common.month == 0) {
                     months = fMonth;
                     Common.month = 1;
@@ -110,7 +110,9 @@ public class GraphActivity extends AppCompatActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            data.setValueTextColor(Color.BLACK);
+            if (data != null) {
+                data.setValueTextColor(Color.BLACK);
+            }
 
             holder.chart.getDescription().setEnabled(false);
             holder.chart.setDrawGridBackground(false);
@@ -118,7 +120,7 @@ public class GraphActivity extends AppCompatActivity {
             XAxis xAxis = holder.chart.getXAxis();
             xAxis.setValueFormatter(new MyXAxisValueFormatter(months));
             xAxis.setGranularity(1);
-    xAxis.setTextSize(12);
+            xAxis.setTextSize(12);
 
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setDrawGridLines(false);
@@ -186,39 +188,43 @@ public class GraphActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                lav_loading.setVisibility(View.GONE);
                 monthList.clear();
                 months = new ArrayList<>();
                 if (chartDataAdapter != null) {
                     chartDataAdapter.clear();
                 }
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    Month monthData = dataSnapshot1.getValue(Month.class);
-                    monthList.add(monthData.getMounits());
-                    months.add(monthData.getMonth());
-                    Log.i("month", monthData.getMounits());
+                for (DataSnapshot monthDataSnapShot : dataSnapshot.getChildren()) {
+                    Month monthData = monthDataSnapShot.getValue(Month.class);
+                    if (monthData != null) {
+                        monthList.add(monthData.getMounits());
+                    }
+                    if (monthData != null) {
+                        months.add(monthData.getMonth());
+                    }
+//                    Log.i("month", monthData.getMounits());
                 }
                 if (months.size() <= 6) {
                     list.add(generateData(Calendar.getInstance().get(Calendar.YEAR)));
-                }
-                else {
-
+                    Common.monthSizeExceed = false;
+                } else {
+                    Common.monthSizeExceed = true;
                     List<String> fMonthunits = new ArrayList<>();
                     List<String> lMonthunits = new ArrayList<>();
 
-                    for (int i = 0;i<=5;i++){
+                    for (int i = 0; i <= 5; i++) {
                         fMonth.add(months.get(i));
                         fMonthunits.add(monthList.get(i));
                     }
-                    for (int i = 6; i<=months.size()-1;i++){
+                    for (int i = 6; i <= months.size() - 1; i++) {
                         lMonth.add(months.get(i));
                         lMonthunits.add(monthList.get(i));
                     }
                     for (int i = 0; i <= 1; i++) {
-                        if (i ==0){
+                        if (i == 0) {
                             monthList = fMonthunits;
                             list.add(generateData(Calendar.getInstance().get(Calendar.YEAR)));
-                        }
-                        else {
+                        } else {
                             monthList = lMonthunits;
                             list.add(generateData(Calendar.getInstance().get(Calendar.YEAR)));
                         }

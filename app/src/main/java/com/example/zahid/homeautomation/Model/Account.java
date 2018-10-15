@@ -3,15 +3,24 @@ package com.example.zahid.homeautomation.Model;
 public class Account {
     private String email;
     private String devicemac;
-    private String live;
+    private String liverequest;
+
+    public String getLiverequest() {
+        return liverequest;
+    }
+
+    public void setLiverequest(String liverequest) {
+        this.liverequest = liverequest;
+    }
 
     public Account(){
 
+
     }
-    public Account(String email, String devicemac, String live) {
+    public Account(String email, String devicemac, String liverequest) {
         this.email = email;
         this.devicemac = devicemac;
-        this.live = live;
+        this.liverequest = liverequest;
     }
 
     public String getEmail() {
@@ -30,11 +39,5 @@ public class Account {
         this.devicemac = devicemac;
     }
 
-    public String getLive() {
-        return live;
-    }
 
-    public void setLive(String live) {
-        this.live = live;
-    }
 }
